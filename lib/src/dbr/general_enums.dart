@@ -186,3 +186,11 @@ class EnumBarcodeColourMode {
   static const int BICM_DARK_ON_LIGHT_DARK_SURROUNDING = 32;
 }
 
+class EnumEnhancedFeatures {
+  static const int EF_FRAME_FILTER = 1;
+  static const int EF_SENSOR_CONTROL = 2;
+  static const int EF_ENHANCED_FOCUS = 4;
+  static const int EF_AUTO_ZOOM = 16;
+  static const int EF_SMART_TORCH = 32;
+  static const int EF_ALL = 55;
+}

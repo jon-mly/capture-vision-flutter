@@ -50,10 +50,12 @@ public class Common {
 
     public static final String cameraView_torchButton = "cameraView_torchButton";
 
-    /// Navigation and lifecycle methods
-    public static final String navigation_didPopNext = "navigation_didPopNext";
-    public static final String navigation_didPushNext = "navigation_didPushNext";
-    public static final String appState_becomeResumed = "appState_becomeResumed";
-    public static final String appState_becomeInactive = "appState_becomeInactive";
+    public static final String cameraEnhancer_enable_enhanced_features = "cameraEnhancer_enable_enhanced_features";
+    public static final String cameraEnhancer_disable_enhanced_features = "cameraEnhancer_disable_enhanced_features";
+    public static final String cameraEnhancer_set_zoom_factor = "cameraEnhancer_set_zoom_factor";
+    public static final String cameraEnhancer_get_zoom_factor = "cameraEnhancer_get_zoom_factor";
+    public static final String cameraEnhancer_set_zoom_range = "cameraEnhancer_set_zoom_range";
+    public static final String cameraEnhancer_get_zoom_range = "cameraEnhancer_get_zoom_range";
+    public static final String cameraEnhancer_get_max_zoom_factor = "cameraEnhancer_get_max_zoom_factor";
 
 }

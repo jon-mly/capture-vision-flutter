@@ -6,8 +6,7 @@ import android.content.res.AssetManager;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.pdf.PdfDocument;
-import android.util.Log;
+import android.util.Range;
 
 import androidx.annotation.NonNull;
 
@@ -15,12 +14,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 /// Plugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.plugin.common.JSONMessageCodec;
-import io.flutter.plugin.common.JSONUtil;
 import io.flutter.plugin.common.MessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
@@ -40,7 +36,6 @@ import com.dynamsoft.dbr.EnumPresetTemplate;
 import com.dynamsoft.dbr.PublicRuntimeSettings;
 import com.dynamsoft.dbr.TextResult;
 import com.dynamsoft.dce.CameraEnhancer;
-import com.dynamsoft.dce.DCEFrame;
 import com.dynamsoft.dce.EnumCameraPosition;
 import com.dynamsoft.dce.RegionDefinition;
 import com.dynamsoft.dce.CameraEnhancerException;
@@ -51,7 +46,6 @@ import com.dynamsoft.dcv.flutter.capture_view.BarcodeScanningCaptureView;
 /// Handles
 import com.dynamsoft.dcv.flutter.handles.DynamsoftConvertManager;
 import com.dynamsoft.dcv.flutter.handles.DynamsoftSDKManager;
-import com.dynamsoft.dcv.flutter.handles.DynamsoftToolsManager;
 
 public class DynamsoftCaptureVisionFactory extends PlatformViewFactory implements MethodCallHandler, StreamHandler {
 
@@ -254,25 +248,79 @@ public class DynamsoftCaptureVisionFactory extends PlatformViewFactory implement
 				}
 				result.success(null);
 				break;
-
-			/// Navigation and lifecycle methods
-//			case Common.navigation_didPushNext:
-//				navigationDidPushNext(result);
-//				break;
-//			case Common.navigation_didPopNext:
-//				navigationDidPopNext(result);
-//				break;
-//			case Common.appState_becomeResumed:
-//				appStateBecomeResumed(result);
-//				break;
-//			case Common.appState_becomeInactive:
-//				appStateBecomeInactive(result);
-//				break;
+			case Common.cameraEnhancer_enable_enhanced_features:
+				enableEnhancedFeatures((Integer) call.arguments);
+				result.success(null);
+				break;
+			case Common.cameraEnhancer_disable_enhanced_features:
+				disableEnhancedFeatures((Integer) call.arguments);
+				result.success(null);
+				break;
+			case Common.cameraEnhancer_set_zoom_factor:
+				double zoomFactor = (double) call.arguments;
+				setZoomFactor((float) zoomFactor);
+				result.success(null);
+				break;
+			case Common.cameraEnhancer_set_zoom_range:
+				double start = (double)call.argument("start");
+				double end = (double)call.argument("end");
+				Range<Float> zoomRange = new Range<>((float)start, (float)end);
+				setZoomRange(zoomRange);
+				result.success(null);
+				break;
+			case Common.cameraEnhancer_get_zoom_range:
+				Range<Float> returnRange = getZoomRange();
+				HashMap<String, Float> zoomRangeMap = null;
+				if (returnRange != null) {
+					zoomRangeMap = new HashMap<>();
+					if (returnRange.getLower() != null) {
+						zoomRangeMap.put("start", returnRange.getLower());
+					}
+					if (returnRange.getUpper() != null) {
+						zoomRangeMap.put("end", returnRange.getUpper());
+					}
+				}
+				result.success(zoomRangeMap);
+				break;
+			case Common.cameraEnhancer_get_max_zoom_factor:
+				float maxZoomFactor = getMaxZoomFactor();
+				result.success(maxZoomFactor);
+				break;
 
 			default:
 				result.notImplemented();
 		}
 
+	}
+
+	private float getMaxZoomFactor() {
+		if (DynamsoftSDKManager.manager().cameraEnhancer != null) {
+			return DynamsoftSDKManager.manager().cameraEnhancer.getMaxZoomFactor();
+		}
+		return 0f;
+	}
+
+	private Range<Float> getZoomRange() {
+		if (DynamsoftSDKManager.manager().cameraEnhancer != null) {
+			return DynamsoftSDKManager.manager().cameraEnhancer.getAutoZoomRange();
+		}
+		return null;
+	}
+
+	private void setZoomRange(Range<Float> zoomRange) {
+		if (DynamsoftSDKManager.manager().cameraEnhancer != null) {
+			DynamsoftSDKManager.manager().cameraEnhancer.setAutoZoomRange(zoomRange);
+		}
+	}
+
+	private void setZoomFactor(float zoomFactor) {
+		if (DynamsoftSDKManager.manager().cameraEnhancer != null) {
+			try {
+				DynamsoftSDKManager.manager().cameraEnhancer.setZoom(zoomFactor);
+			} catch (CameraEnhancerException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private String barcodeReaderGetModeArgument(String modesName, int index, String argumentName) {
@@ -546,52 +594,19 @@ public class DynamsoftCaptureVisionFactory extends PlatformViewFactory implement
 		}
 	}
 
-
-	/// Navigation and lifecycle methods
-	private void navigationDidPopNext(Result result) {
-		if (DynamsoftSDKManager.manager().cameraEnhancer != null) {
-			try {
-				DynamsoftSDKManager.manager().cameraEnhancer.open();
-				result.success(null);
-			} catch (CameraEnhancerException e) {
-				result.error(Common.exceptionTip, e.getMessage(), null);
+	private void enableEnhancedFeatures(int feature) {
+		try {
+			if (DynamsoftSDKManager.manager().cameraEnhancer != null) {
+				DynamsoftSDKManager.manager().cameraEnhancer.enableFeatures(feature);
 			}
+		} catch (CameraEnhancerException e) {
+			e.printStackTrace();
 		}
 	}
 
-	private void navigationDidPushNext(Result result) {
+	private void disableEnhancedFeatures(int feature) {
 		if (DynamsoftSDKManager.manager().cameraEnhancer != null) {
-			try {
-				DynamsoftSDKManager.manager().cameraEnhancer.close();
-				result.success(null);
-			} catch (CameraEnhancerException e) {
-				result.error(Common.exceptionTip, e.getMessage(), null);
-			}
+			DynamsoftSDKManager.manager().cameraEnhancer.disableFeatures(feature);
 		}
 	}
-
-	private void appStateBecomeResumed(Result result) {
-		if (DynamsoftSDKManager.manager().cameraEnhancer != null) {
-			try {
-				DynamsoftSDKManager.manager().cameraEnhancer.open();
-				result.success(null);
-
-			} catch (CameraEnhancerException e) {
-				result.error(Common.exceptionTip, e.getMessage(), null);
-			}
-		}
-
-	}
-
-	private void appStateBecomeInactive(Result result) {
-		if (DynamsoftSDKManager.manager().cameraEnhancer != null) {
-			try {
-				DynamsoftSDKManager.manager().cameraEnhancer.close();
-				result.success(null);
-			} catch (CameraEnhancerException e) {
-				result.error(Common.exceptionTip, e.getMessage(), null);
-			}
-		}
-	}
-
 }

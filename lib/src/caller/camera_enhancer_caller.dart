@@ -1,3 +1,7 @@
+import 'dart:ffi';
+
+import 'package:flutter/material.dart';
+
 import '../dbr/general_enums.dart';
 import '../common/basic_structures.dart';
 import '../misc/dcv_channel_common.dart';
@@ -54,5 +58,41 @@ class CameraEnhancerCaller {
   Future setTorchButton(TorchButton button) {
     return methodChannel.invokeMethod(
         "cameraView_torchButton", button.toJson());
+  }
+
+  Future enableEnhancedFeatures(int feature) {
+    return methodChannel.invokeMethod(
+        "cameraEnhancer_enable_enhanced_features", feature);
+  }
+
+  Future disableEnhancedFeatures(int feature) {
+    return methodChannel.invokeMethod(
+        "cameraEnhancer_disable_enhanced_features", feature);
+  }
+
+  Future setZoomFactor(double zoomFactor) {
+    return methodChannel.invokeMethod(
+        "cameraEnhancer_set_zoom_factor", zoomFactor);
+  }
+
+  Future setAutoZoomRange(RangeValues zoomRange) {
+    final rangeValues = {'start': zoomRange.start, 'end': zoomRange.end};
+    return methodChannel.invokeMethod(
+        "cameraEnhancer_set_zoom_range", rangeValues);
+  }
+
+  Future<RangeValues?> getAutoZoomRange() async {
+    final zoomRange = await methodChannel
+        .invokeMethod("cameraEnhancer_get_zoom_range");
+    if (zoomRange != null) {
+      final rangeValues =
+          RangeValues(zoomRange['start'] ?? 0, zoomRange['end'] ?? 0);
+      return rangeValues;
+    }
+    return null;
+  }
+
+  Future<double?> getMaxZoomFactor() {
+    return methodChannel.invokeMethod<double>("cameraEnhancer_get_max_zoom_factor");
   }
 }

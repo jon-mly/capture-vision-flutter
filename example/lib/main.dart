@@ -149,6 +149,11 @@ class _BarcodeScannerState extends State<BarcodeScanner>
       visible: true,
     );
 
+    _cameraEnhancer.getMaxZoomFactor();
+    _cameraEnhancer.setZoomFactor(2.0);
+    _cameraEnhancer.getAutoZoomRange();
+    _cameraEnhancer.setAutoZoomRange(RangeValues(0, 1));
+
     await _barcodeReader.enableResultVerification(true);
 
     // Stream listener to handle callback when barcode result is returned.

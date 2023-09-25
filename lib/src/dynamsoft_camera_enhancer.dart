@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../dynamsoft_capture_vision_flutter.dart';
 import 'caller/camera_enhancer_caller.dart';
 
@@ -48,6 +50,30 @@ class DCVCameraEnhancer {
   /// ```
   Future setScanRegion(Region? scanRegion){
     return _cameraEnhancerCaller.setScanRegion(scanRegion);
+  }
+
+  Future enableEnhancedFeatures (int feature){
+    return _cameraEnhancerCaller.enableEnhancedFeatures(feature);
+  }
+
+  Future<void> disableEnhancedFeatures (int feature){
+    return _cameraEnhancerCaller.disableEnhancedFeatures(feature);
+  }
+
+  Future setZoomFactor(double zoomFactor){
+    return _cameraEnhancerCaller.setZoomFactor(zoomFactor);
+  }
+
+  Future setAutoZoomRange(RangeValues zoomRange){
+    return _cameraEnhancerCaller.setAutoZoomRange(zoomRange);
+  }
+
+  Future<RangeValues?> getAutoZoomRange(){
+    return _cameraEnhancerCaller.getAutoZoomRange();
+  }
+
+  Future<double?> getMaxZoomFactor(){
+    return _cameraEnhancerCaller.getMaxZoomFactor();
   }
 }
 
