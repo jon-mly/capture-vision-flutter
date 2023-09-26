@@ -132,6 +132,18 @@
         [self cameraEnhancer_turnOnTorch:call.arguments];
     } else if ([cameraEnhancer_turnOffTorch isEqualToString:call.method]) {
         [self cameraEnhancer_turnOffTorch:call.arguments];
+    } else if ([cameraEnhancer_enableEnhancedFeatures isEqualToString:call.method]) {
+        [self cameraEnhancer_enableEnhancedFeatures:call.arguments];
+    } else if ([cameraEnhancer_disableEnhancedFeatures isEqualToString:call.method]) {
+        [self cameraEnhancer_disableEnhancedFeatures:call.arguments];
+    } else if ([cameraEnhancer_setZoomFactor isEqualToString:call.method]) {
+        [self cameraEnhancer_setZoomFactor:call.arguments];
+    } else if ([cameraEnhancer_getMaxZoomFactor isEqualToString:call.method]) {
+        [self cameraEnhancer_getMaxZoomFactor:call.arguments];
+    } else if ([cameraEnhancer_setAutoZoomRange isEqualToString:call.method]) {
+        [self cameraEnhancer_setAutoZoomRange:call.arguments];
+    } else if ([cameraEnhancer_getAutoZoomRange isEqualToString:call.method]) {
+        [self cameraEnhancer_getAutoZoomRange:call.arguments];
     }
     
     // DCECameraView
@@ -402,6 +414,41 @@
     self.resultMethod(nil);
 }
 
+- (void)cameraEnhancer_enableEnhancedFeatures:(id)arguments {
+    int featureMode = [arguments intValue];
+    [[DynamsoftSDKManager manager].cameraEnhancer enableFeatures:(NSInteger)featureMode error:nil];
+    self.resultMethod(nil);
+}
+
+- (void)cameraEnhancer_disableEnhancedFeatures:(id)arguments {
+    int featureMode = [arguments intValue];
+    [[DynamsoftSDKManager manager].cameraEnhancer disableFeatures:(NSInteger)featureMode];
+    self.resultMethod(nil);
+}
+
+- (void)cameraEnhancer_setZoomFactor:(id)arguments {
+    double factor = [arguments doubleValue];
+    [[DynamsoftSDKManager manager].cameraEnhancer setZoom:factor];
+    self.resultMethod(nil);
+}
+
+- (void)cameraEnhancer_getMaxZoomFactor:(id)arguments {
+    double maxZoomFactor = [[DynamsoftSDKManager manager].cameraEnhancer getMaxZoomFactor];
+    self.resultMethod(@(maxZoomFactor));
+}
+
+- (void)cameraEnhancer_setAutoZoomRange:(id)arguments {
+    UIFloatRange autoZoomRange = [[DynamsoftConvertManager manager] analyzeFloatRangeFrameFromJson:arguments];
+    [[DynamsoftSDKManager manager].cameraEnhancer setAutoZoomRange:autoZoomRange];
+    self.resultMethod(nil);
+}
+
+- (void)cameraEnhancer_getAutoZoomRange:(id)arguments {
+    UIFloatRange autoZoomRange = [DynamsoftSDKManager manager].cameraEnhancer.autoZoomRange;
+    self.resultMethod([[DynamsoftConvertManager manager] wrapUIFloatRangeToJson:autoZoomRange]);
+}
+
+// MARK: - CameraView methods
 - (void)cameraView_torchButton:(id)arguments {
     BOOL torchIsVisible = YES;
     CGRect torchRect = CGRectMake(25, 100, 45, 45);

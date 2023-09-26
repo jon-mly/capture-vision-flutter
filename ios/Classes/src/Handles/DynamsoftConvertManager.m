@@ -122,6 +122,12 @@
     return CGRectMake(x, y, width <= torchDefaultRect.size.width ? width : torchDefaultRect.size.width, height <= torchDefaultRect.size.height ? height : torchDefaultRect.size.height);
 }
 
+- (UIFloatRange)analyzeFloatRangeFrameFromJson:(id)jsonData {
+    double start = [[jsonData valueForKey:@"start"] doubleValue];
+    double end = [[jsonData valueForKey:@"end"] doubleValue];
+    return UIFloatRangeMake(start, end);
+}
+
 //MARK: ToJson
 
 - (NSArray *)wrapResultsToJson:(NSArray<iTextResult *> *)results
@@ -190,6 +196,10 @@
                                @"barcodeColourModes":runtimeSettings.furtherModes.barcodeColourModes,
              }
     };
+}
+
+- (NSDictionary *)wrapUIFloatRangeToJson:(UIFloatRange)floatRange {
+    return @{@"start":@(floatRange.minimum), @"end":@(floatRange.maximum)};
 }
 
 @end

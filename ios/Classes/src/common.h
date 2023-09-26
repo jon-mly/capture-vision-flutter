@@ -39,6 +39,12 @@ static NSString *const cameraEnhancer_closeCamera = @"cameraEnhancer_closeCamera
 static NSString *const cameraEnhancer_selectCamera = @"cameraEnhancer_selectCamera";
 static NSString *const cameraEnhancer_turnOnTorch = @"cameraEnhancer_turnOnTorch";
 static NSString *const cameraEnhancer_turnOffTorch = @"cameraEnhancer_turnOffTorch";
+static NSString *const cameraEnhancer_enableEnhancedFeatures = @"cameraEnhancer_enable_enhanced_features";
+static NSString *const cameraEnhancer_disableEnhancedFeatures = @"cameraEnhancer_disable_enhanced_features";
+static NSString *const cameraEnhancer_setZoomFactor = @"cameraEnhancer_set_zoom_factor";
+static NSString *const cameraEnhancer_getMaxZoomFactor = @"cameraEnhancer_get_max_zoom_factor";
+static NSString *const cameraEnhancer_setAutoZoomRange = @"cameraEnhancer_set_zoom_range";
+static NSString *const cameraEnhancer_getAutoZoomRange = @"cameraEnhancer_get_zoom_range";
 
 /// DCECameraView methods.
 static NSString *const cameraView_torchButton = @"cameraView_torchButton";

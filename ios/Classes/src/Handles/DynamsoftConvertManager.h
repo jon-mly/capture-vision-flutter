@@ -25,6 +25,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (CGRect)analyzeCustomTorchButtonFrameFromJson:(id)jsonData
                                torchDefaultRect:(CGRect)torchDefaultRect;
 
+/// Convert json to UIFloatRange.
+- (UIFloatRange)analyzeFloatRangeFrameFromJson:(id)jsonData;
+
 //MARK: ToJson
 
 /// Wrap textResults to Json.
@@ -32,6 +35,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Wrap iPublicRuntimeSettings to Json.
 - (NSDictionary *)wrapRuntimeSettingsToJson:(iPublicRuntimeSettings *)runtimeSettings;
+
+/// Wrap UIFloatRange to Json.
+- (NSDictionary *)wrapUIFloatRangeToJson:(UIFloatRange)floatRange;
 
 @end
 
